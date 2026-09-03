@@ -1,0 +1,32 @@
+/*
+  The CSS in this style tag is based off of Bear Blog's default CSS.
+  https://github.com/HermanMartinus/bearblog/blob/297026a877bc2ab2b3bdfbd6b9f7961c350917dd/templates/styles/blog/default.css
+  License MIT: https://github.com/HermanMartinus/bearblog/blob/master/LICENSE.md
+ */
+
+ @import "tailwindcss";
+
+
+body {
+  font-family: 'Bricolage Grotesque Variable', sans-serif;}
+
+
+@theme {
+  /* Base */
+  --color-background: #ffffff;
+  --color-foreground: #09090b;
+
+  /* Brand */
+  --color-primary: #5a92b4;
+  --color-primary-foreground: #ffffff;
+
+  /* Accent */
+  --color-accent: #3b82f6;
+  --color-accent-foreground: #ffffff;
+
+  /* UI */
+  --color-muted: #f4f4f5;
+  --color-muted-foreground: #71717a;
+
+  --color-border: #e4e4e7;
+}
