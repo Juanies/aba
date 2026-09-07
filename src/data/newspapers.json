@@ -1,0 +1,18 @@
+[
+    {
+        "id": "diario-valladolid",
+        "title": "Diario Valladolid",
+        "slug": "diario-valladolid",
+        "description": "Actualidad, cultura y vida local de Valladolid.",
+        "cover": "/covers/diario-valladolid.svg",
+        "createdAt": "2026-09-01"
+    },
+    {
+        "id": "la-gaceta-norte",
+        "title": "La Gaceta del Norte",
+        "slug": "la-gaceta-norte",
+        "description": "Las historias que explican el presente del norte.",
+        "cover": "/covers/la-gaceta-norte.svg",
+        "createdAt": "2026-09-02"
+    }
+]

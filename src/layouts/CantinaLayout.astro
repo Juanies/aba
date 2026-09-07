@@ -1,0 +1,108 @@
+---
+import BaseHead from "../components/BaseHead.astro";
+import {
+    getCategoryLabel,
+    type Newspaper,
+    type NewspaperPost,
+} from "../data/newspapers";
+
+interface Props {
+    title: string;
+    description: string;
+    newspaper: Newspaper;
+    posts?: NewspaperPost[];
+}
+
+const { title, description, newspaper, posts = [] } = Astro.props;
+const categories = [...new Set(posts.map((post) => post.data.category))];
+---
+
+<html lang="es">
+    <head><BaseHead title={title} description={description} /></head>
+    <body class="cantina-body">
+        <header class="cantina-header">
+            <a href={`/periodicos/${newspaper.slug}`}>EL RINCÓN DE LA CANTINA</a
+            >
+            <span>Edición sin prisa</span>
+        </header>
+        <nav class="cantina-nav" aria-label="Secciones del periódico">
+            {
+                categories.map((category) => (
+                    <a
+                        href={`/periodicos/${newspaper.slug}/categoria/${category}`}
+                    >
+                        {getCategoryLabel(category)}
+                    </a>
+                ))
+            }
+        </nav>
+        <main><slot /></main>
+        <footer class="cantina-footer">
+            <strong>La cantina</strong>
+            <span>Historias servidas calientes.</span>
+        </footer>
+    </body>
+</html>
+
+<style>
+    .cantina-body {
+        background: #f5e8ce;
+        color: #3f2418;
+        font-family: Georgia, serif;
+    }
+    .cantina-header {
+        align-items: baseline;
+        border-bottom: 3px double #8a4b2b;
+        display: flex;
+        justify-content: space-between;
+        margin: 0 auto;
+        max-width: 1100px;
+        padding: 1.4rem 1.5rem;
+    }
+    .cantina-header a {
+        color: #8a2f1f;
+        font-size: clamp(1.4rem, 4vw, 2.8rem);
+        font-weight: 700;
+        letter-spacing: 0.04em;
+    }
+    .cantina-header span {
+        font-style: italic;
+    }
+    .cantina-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin: 1rem auto 0;
+        max-width: 1100px;
+        padding: 0 1.5rem;
+    }
+    .cantina-nav a {
+        color: #8a2f1f;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+    }
+    .cantina-nav a:hover {
+        text-decoration: underline;
+    }
+    main {
+        margin: 0 auto;
+        max-width: 1100px;
+        padding: 4rem 1.5rem 6rem;
+    }
+    .cantina-footer {
+        background: #8a2f1f;
+        color: #f5e8ce;
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        padding: 2.5rem 1.5rem;
+    }
+    @media (max-width: 600px) {
+        .cantina-header,
+        .cantina-footer {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+    }
+</style>

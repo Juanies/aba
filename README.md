@@ -1,63 +1,32 @@
-# Astro Starter Kit: Blog
+# Periódicos digitales
+
+Proyecto Astro + TypeScript para publicar periódicos definidos en código. No necesita panel de administración ni base de datos externa.
+
+## Ejecutar
 
 ```sh
-npm create astro@latest -- --template blog
+npm install
+npm run dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Estructura
 
-Features:
+- `src/data/newspapers.json`: catálogo de periódicos (`id`, `title`, `slug`, `description`, `cover`, `createdAt`).
+- `src/data/newspapers.ts`: acceso a datos y relación periódico-publicaciones.
+- `src/content/newspapers/<slug>/`: publicaciones Markdown.
+- `src/content.config.ts`: validación del frontmatter.
+- `src/pages/periodicos/[periodico].astro`: portada dinámica del periódico.
+- `src/pages/periodicos/[periodico]/categoria/[categoria].astro`: sección dinámica filtrada por categoría.
+- `src/pages/periodicos/[periodico]/[publicacion].astro`: publicación dinámica renderizada desde Markdown.
+- `src/layouts/CantinaLayout.astro`: diseño alternativo para la categoría `cantina`.
 
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and Open Graph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
+Cada publicación incluye `newspaperId`, `category`, `title`, `slug`, `description`, `author`, `date`, `cover` y `contentPath` en su frontmatter. Para añadir una edición, incorpora un objeto al JSON y una carpeta con sus archivos Markdown. Astro generará las rutas de portada, categoría y publicación automáticamente durante el build. Si `category` es `cantina`, se utiliza el header y footer alternativos.
 
-## 🚀 Project Structure
+## Rutas de ejemplo
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-├── public/
-├── src/
-│   ├── assets/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
-├── astro.config.mjs
-├── README.md
-├── package.json
-└── tsconfig.json
-```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
-
-## Credit
-
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+- `/`
+- `/periodicos/diario-valladolid`
+- `/periodicos/diario-valladolid/plaza-mayor-renovada`
+- `/periodicos/la-gaceta-norte`
+- `/periodicos/la-gaceta-norte/faro-restaurado`
+- `/periodicos/la-gaceta-norte/categoria/cantina`

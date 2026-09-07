@@ -1,179 +1,87 @@
 ---
+import NewspaperLayout from "../layouts/NewspaperLayout.astro";
+import { getNewspapers, getNewspaperPosts } from "../data/newspapers";
 import Image from "astro/components/Image.astro";
-import BaseHead from "../components/BaseHead.astro";
-import Footer from "../components/Footer.astro";
-import Header from "../components/Header.astro";
-import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
-import { getCollection } from "astro:content";
-import FormattedDate from "../components/FormattedDate.astro";
 
-const posts = (await getCollection("blog")).sort(
-    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+const newspapers = await Promise.all(
+    getNewspapers().map(async (newspaper) => ({
+        newspaper,
+        posts: await getNewspaperPosts(newspaper.id),
+    })),
 );
 ---
 
-<!doctype html>
-<html lang="en">
-    <head>
-        <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-    </head>
-    <body>
-        <main>
-            <!-- ⚠️ Set body bg: <body class="bg-[#faf8f2]"> -->
-            <!-- Diamond Storm - Aura (lattice) -->
-            <div class="relative overflow-hidden min-h-screen">
-                <!-- Layer 1 -->
-                <div
-                    class="absolute inset-0 pointer-events-none"
-                    style="background: radial-gradient(55.8% 55.49% at 50% 100%, rgb(20,60,120) 0%, rgba(10,30,80,0) 100%); mix-blend-mode: multiply"
-                    aria-hidden="true"
-                >
-                </div>
-                <!-- Layer 2 -->
-                <div
-                    class="absolute inset-0 pointer-events-none blur-[75px] md:blur-[108px] opacity-90"
-                    style="background:
-                repeating-linear-gradient(
-                100deg,
-                #041022 0%,
-                #041022 3%,
-                rgba(20, 60, 120, 0.7) 5%,
-                rgba(20, 60, 120, 0.7) 7%,
-                transparent 10%,
-                transparent 12%,
-                rgba(20, 60, 120, 0.7) 14%,
-                #041022 16%
-                ),
-                repeating-linear-gradient(
-                100deg,
-                #b3e5ff 0%,
-                #b3e5ff 1.5%,
-                rgba(179, 229, 255, 0.8) 2%,
-                #2563eb 3%,
-                #2563eb 4%,
-                rgba(179, 229, 255, 0.8) 4.5%,
-                #b3e5ff 5%
-                )
-                ; background-size: 300% 200%; mix-blend-mode: multiply"
-                    aria-hidden="true"
-                >
-                </div>
-                <!-- Layer 3 -->
-                <div
-                    class="absolute inset-0 pointer-events-none"
-                    style="background: radial-gradient(ellipse at 100% 100%, #ffffff 20%, #00030a 80%); mix-blend-mode: multiply"
-                    aria-hidden="true"
-                >
-                </div>
-                <!-- Content wrapper - keep it above the absolute layers -->
-                <div class="relative z-[1]">
-                    <Header />
-                    <div class="w-full h-full text-white pb-4">
-                        <section
-                            class="mx-auto min-h-dvh p-4 flex flex-col items-center"
-                        >
-                            <h1
-                                class="text-8xl mt-42 max-w-[16ch] text-center font-bold
+<NewspaperLayout
+    title="Periódicos digitales"
+    description="Explora nuestras ediciones digitales."
+>
+    <header class="mx-auto flex flex-col items-center max-w-7xl">
+        <h1
+            class="text-8xl  max-w-[16ch] text-center font-bold
                 text-transparent bg-linear-to-r
-                from-primary via-white to-primary
+                from-primary via-white/90 to-primary
                 bg-clip-text"
-                            >
-                                Academia basica del aire y del espacio
-                            </h1>
+        >
+            Academia basica del aire y del espacio
+        </h1>
+        <p class="text-3xl mt-12">
+            Elige un periodico para descubrir sus publicaciones.
+        </p>
+    </header>
+    <section
+        class="newspapers mt-24 grid grid-cols-3 gap-12"
+        aria-label="Periódicos disponibles"
+    >
+        {
+            newspapers.map(({ newspaper }) => (
+                <article class="group overflow-hidden rounded-2xl border border-white/10 bg-white/[0.06] shadow-lg shadow-black/5 transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.09] hover:shadow-xl">
+                    <a
+                        href={`/periodicos/${newspaper.slug}`}
+                        class="flex h-full flex-col"
+                    >
+                        <div class="relative aspect-[4/3] overflow-hidden bg-gray-100">
+                            <Image
+                                src={newspaper.cover}
+                                class="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                                height={400}
+                                width={600}
+                                alt={`Portada de ${newspaper.title}`}
+                            />
 
-                            <p
-                                class="max-w-[55ch] text-center text-background/70 mt-12 text-2xl"
-                            >
-                                Descubre las últimas noticias, novedades y
-                                actividades de nuestra academia, y conoce de
-                                cerca el día a día de nuestra formación.
+                            <div class="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-black/10" />
+
+                            <div class="absolute left-4 top-4">
+                                <span class="inline-flex items-center rounded-full border border-white/20 bg-black/30 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-md">
+                                    {newspaper.createdAt}
+                                </span>
+                            </div>
+
+                            <div class="absolute bottom-4 right-4 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/30 text-white backdrop-blur-md transition-all duration-300 group-hover:translate-x-1 group-hover:bg-white group-hover:text-gray-900">
+                                →
+                            </div>
+                        </div>
+
+                        <div class="flex flex-1 flex-col gap-3 p-5">
+                            <h2 class="text-xl font-bold tracking-tight text-white transition-colors group-hover:text-white/80">
+                                {newspaper.title}
+                            </h2>
+
+                            <p class="line-clamp-2 text-sm leading-relaxed text-white/60">
+                                {newspaper.description}
                             </p>
-                        </section>
-                        <section
-                            class=" grid grid-cols-[1fr_2.5fr_1.4fr]  mx-auto max-w-360 gap-4 p-4"
-                        >
-                            <div
-                                class="border flex flex-col gap-4 border-border/20 bg-white/7 backdrop-blur-2xl rounded-lg p-4"
-                            >
-                                <h3 class="text-2xl font-medium">Reportajes</h3>
-                                <ul class="flex flex-col gap-8">
-                                    {
-                                        posts.map((post, i) => (
-                                            <li class="">
-                                                <a
-                                                    class="flex group flex-col gap-2"
-                                                    href={`/blog/${post.id}`}
-                                                >
-                                                    {i === 0 && (
-                                                        <Image
-                                                            class="mb-2"
-                                                            src={
-                                                                post.data
-                                                                    .heroImage
-                                                            }
-                                                            alt={
-                                                                post.data.title
-                                                            }
-                                                        />
-                                                    )}
-                                                    <h4 class="group-hover:text-primary duration-150 transition-all">{post.data.title}</h4>
-                                                    <p class="date text-sm text-muted/80">
-                                                        <FormattedDate
-                                                            date={
-                                                                post.data
-                                                                    .pubDate
-                                                            }
-                                                        />
-                                                    </p>
-                                                </a>
-                                            </li>
-                                            <hr class=" text-white/20"/>
-                                        ))
-                                    }
-                                </ul>
+
+                            <div class="mt-auto pt-3">
+                                <span class="text-sm font-semibold text-white/80 transition-colors group-hover:text-white">
+                                    Ver periodico
+                                    <span class="ml-1 inline-block transition-transform duration-300 group-hover:translate-x-1">
+                                        →
+                                    </span>
+                                </span>
                             </div>
-                            <div
-                                class="flex flex-col gap-4 border border-border/20 bg-white/7 backdrop-blur-2xl rounded-lg p-4"
-                            >
-                                <h3 class="text-2xl font-medium">Destacado</h3>
-                                <a href={`/blog/${posts[0].id}`} class="flex flex-col gap-4">
-                                    <div class="aspect-3/2">
-                                        <Image
-                                        src={posts[0].data.heroImage}
-                                        alt={posts[0].data.title}
-                                        class="w-full h-full object-cover"
-                                        />
-                                    </div>
-                                    <h4 class="text-4xl max-w-[30ch]">{posts[0].data.title}</h4>
-                                    <p>{posts[0].data.description}</p>
-                                </a>
-                            </div>
-                            <div
-                                class="border flex flex-col gap-4 border-border/20 bg-white/7 backdrop-blur-2xl rounded-lg p-4"
-                            >
-                                <h3 class="text-2xl font-medium">
-                                    Entrevistas
-                                </h3>
-                                <ul class="flex flex-col gap-4">
-                                         {
-                                        posts.map((post, i) => (
-                                            <a class="group" href="" class="">
-                                                <div class="grid  grid-cols-2 gap-4">
-                                                   <div class="flex justify-center items-center">
-                                                     <Image src={post.data.heroImage} alt={post.data.title}/>
-                                                   </div>
-                                                    <h4 class="hover:text-primary">{post.data.title}</h4>
-                                                </div>
-                                            </a>
-                                        ))
-                                    }
-                                </ul>
-                            </div>
-                        </section>
-                    </div>
-                </div>
-            </div>
-            <Footer />
-        </main>
-    </body>
-</html>
+                        </div>
+                    </a>
+                </article>
+            ))
+        }
+    </section>
+</NewspaperLayout>

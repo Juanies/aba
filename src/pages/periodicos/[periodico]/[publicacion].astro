@@ -1,0 +1,106 @@
+---
+import { render } from "astro:content";
+import CantinaLayout from "../../../layouts/CantinaLayout.astro";
+import NewspaperLayout from "../../../layouts/NewspaperLayout.astro";
+import { getNewspaperPosts, getNewspapers } from "../../../data/newspapers";
+
+export async function getStaticPaths() {
+    const paths = await Promise.all(
+        getNewspapers().map(async (newspaper) => {
+            const posts = await getNewspaperPosts(newspaper.id);
+            return posts.map((post) => ({
+                params: {
+                    periodico: newspaper.slug,
+                    publicacion: post.data.slug,
+                },
+                props: { newspaper, post },
+            }));
+        }),
+    );
+
+    return paths.flat();
+}
+
+const { newspaper, post } = Astro.props;
+const allPosts = await getNewspaperPosts(newspaper.id);
+const isCantina = post.data.category === "cantina";
+const Layout = isCantina ? CantinaLayout : NewspaperLayout;
+const { Content } = await render(post);
+---
+
+<Layout
+    title={`${post.data.title} · ${newspaper.title}`}
+    description={post.data.description}
+    newspaper={newspaper}
+    posts={allPosts}
+    publicacion={post.data.slug}
+>
+    <article class:list={["article", { "cantina-article": isCantina }]}>
+        <p class="mt-12">
+            {post.data.author} · {post.data.date.toLocaleDateString("es-ES")}
+        </p>
+        <h1>{post.data.title}</h1>
+        <p class="standfirst">{post.data.description}</p>
+        <img class="article-cover" src={post.data.cover} alt="" />
+        <div class="content"><Content /></div>
+    </article>
+    <style>
+        .article {
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #fff6dc;
+            font-size: clamp(2.8rem, 7vw, 6rem);
+            letter-spacing: -0.04em;
+            line-height: 0.95;
+            margin: 1rem 0;
+        }
+        .standfirst {
+            color: #b9cbd0;
+            font-size: 1.35rem;
+            line-height: 1.5;
+            max-width: 55ch;
+        }
+        .article-cover {
+            display: block;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+            margin: 3rem 0;
+            border: 1px solid #516a70;
+        }
+        .content {
+            color: #d8e4e5;
+            font-size: 1.2rem;
+            line-height: 1.8;
+        }
+        .content :global(h1),
+        .content :global(h2) {
+            color: #fff6dc;
+            margin-top: 2rem;
+        }
+        .content :global(h1) {
+            font-size: 2rem;
+        }
+        .content :global(p) {
+            margin: 1.3rem 0;
+        }
+        .cantina-article h1 {
+            color: #8a2f1f;
+        }
+        .cantina-article .kicker {
+            color: #8a2f1f;
+        }
+        .cantina-article .standfirst {
+            color: #704938;
+        }
+        .cantina-article .content {
+            color: #3f2418;
+        }
+        .cantina-article .content :global(h1),
+        .cantina-article .content :global(h2) {
+            color: #8a2f1f;
+        }
+    </style>
+</Layout>

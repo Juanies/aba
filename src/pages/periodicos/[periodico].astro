@@ -1,0 +1,93 @@
+---
+import NewspaperLayout from "../../layouts/NewspaperLayout.astro";
+import { getNewspaperPosts, getNewspapers } from "../../data/newspapers";
+import Image from "astro/components/Image.astro";
+
+export async function getStaticPaths() {
+    return Promise.all(
+        getNewspapers().map(async (newspaper) => ({
+            params: { periodico: newspaper.slug },
+            props: { newspaper, posts: await getNewspaperPosts(newspaper.id) },
+        })),
+    );
+}
+
+const { newspaper, posts } = Astro.props;
+---
+
+<NewspaperLayout
+    title={newspaper.title}
+    description={newspaper.description}
+    newspaper={newspaper}
+    posts={posts}
+>
+    <section class="mt-12">
+        <div class="flex flex-col">
+            {
+                posts.slice(0, 2).map((post, i) => (
+                    <article class="grid grid-cols-4 gap-4">
+                        <div
+                            class:list={[
+                                "col-span-2 p-4 flex flex-col gap-4",
+                                i === 1 && "order-2",
+                            ]}
+                        >
+                            <h2 class="text-6xl font-bold">
+                                {post.data.title}
+                            </h2>
+
+                            <p class="max-w-[40ch] text-xl">
+                                {post.data.description}
+                            </p>
+                        </div>
+
+                        <div
+                            class:list={[
+                                "col-span-2 aspect-video w-full",
+                                i === 1 && "order-1",
+                            ]}
+                        >
+                            <Image
+                                class="h-full w-full object-cover bg-blue-500"
+                                src={post.data.cover}
+                                alt={post.data.title}
+                                width={600}
+                                height={400}
+                            />
+                        </div>
+                    </article>
+                ))
+            }
+        </div>
+        <div class="grid grid-cols-4 gap-4 mt-12">
+            {
+                posts.map((post) => (
+                    <article class="flex h-full min-w-0 flex-col border border-border/20 bg-white/10 backdrop-blur-2xl">
+                        <Image
+                            class="block h-auto w-full bg-blue-400 object-cover"
+                            src={post.data.cover}
+                            alt={post.data.title}
+                            width={400}
+                            height={200}
+                        />
+
+                        <div class="flex flex-1 flex-col gap-4 p-4">
+
+                            <h3 class="text-lg font-medium">
+                                <a
+                                    href={`/periodicos/${newspaper.slug}/${post.data.slug}`}
+                                >
+                                    {post.data.title}
+                                </a>
+                            </h3>
+
+                            <p>{post.data.description}</p>
+
+                       
+                        </div>
+                    </article>
+                ))
+            }
+        </div>
+    </section>
+</NewspaperLayout>

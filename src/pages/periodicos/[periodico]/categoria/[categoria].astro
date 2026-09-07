@@ -1,0 +1,73 @@
+---
+import CantinaLayout from "../../../../layouts/CantinaLayout.astro";
+import NewspaperLayout from "../../../../layouts/NewspaperLayout.astro";
+import {
+    getCategoryLabel,
+    getNewspaperPosts,
+    getNewspapers,
+} from "../../../../data/newspapers";
+
+export async function getStaticPaths() {
+    const paths = await Promise.all(
+        getNewspapers().map(async (newspaper) => {
+            const posts = await getNewspaperPosts(newspaper.id);
+            const categories = [
+                ...new Set(posts.map((post) => post.data.category)),
+            ];
+
+            return categories.map((category) => ({
+                params: { periodico: newspaper.slug, categoria: category },
+                props: {
+                    newspaper,
+                    posts,
+                    category,
+                    categoryPosts: posts.filter(
+                        (post) => post.data.category === category,
+                    ),
+                },
+            }));
+        }),
+    );
+
+    return paths.flat().filter(Boolean);
+}
+
+const { newspaper, posts, category, categoryPosts } = Astro.props;
+const isCantina = category === "cantina";
+const Layout = isCantina ? CantinaLayout : NewspaperLayout;
+---
+
+<Layout
+    title={`${getCategoryLabel(category)} · ${newspaper.title}`}
+    description={`Publicaciones de ${getCategoryLabel(category)} en ${newspaper.title}.`}
+    newspaper={newspaper}
+    posts={posts}
+>
+    <header class:list={["mt-12", { "cantina-title": isCantina }]}>
+        <h1 class="text-6xl font-medium ">{getCategoryLabel(category)}</h1>
+    </header>
+    <section class:list={["category-grid ", { "cantina-grid": isCantina }]}>
+        {
+            categoryPosts.map((post) => (
+                <article class="category-card">
+                    <img src={post.data.cover} alt="" />
+                    <div>
+                        <p class="meta">
+                            {post.data.author} ·{" "}
+                            {post.data.date.toLocaleDateString("es-ES")}
+                        </p>
+                        <h2>
+                            <a
+                                href={`/periodicos/${newspaper.slug}/${post.data.slug}`}
+                            >
+                                {post.data.title}
+                            </a>
+                        </h2>
+                        <p>{post.data.description}</p>
+                    </div>
+                </article>
+            ))
+        }
+    </section>
+
+</Layout>

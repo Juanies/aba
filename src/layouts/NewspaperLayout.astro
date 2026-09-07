@@ -1,0 +1,134 @@
+---
+import BaseHead from "../components/BaseHead.astro";
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import {
+    getCategoryLabel,
+    type Newspaper,
+    type NewspaperPost,
+} from "../data/newspapers";
+
+interface Props {
+    title: string;
+    description: string;
+    newspaper?: Newspaper;
+    posts?: NewspaperPost[];
+    categories?: string[];
+    publicacion?: string;
+}
+
+const {
+    title,
+    description,
+    newspaper,
+    posts = [],
+    categories = [],
+    publicacion,
+} = Astro.props;
+const menuCategories = categories.length
+    ? categories
+    : [...new Set(posts.map((post) => post.data.category))];
+---
+
+<html lang="es">
+    <head>
+        <BaseHead title={title} description={description} />
+    </head>
+    <body class="newspaper-body text-slate-100">
+        <!-- ⚠️ Set body bg: <body class="bg-[#faf8f2]"> -->
+        <!-- Diamond Storm - Aura (lattice) -->
+        <div class="newspaper-background relative min-h-screen overflow-hidden">
+            <!-- Layer 1 -->
+            <div
+                class="absolute inset-0 pointer-events-none"
+                style="background: radial-gradient(55.8% 55.49% at 50% 100%, rgb(20,60,120) 0%, rgba(10,30,80,0) 100%); mix-blend-mode: multiply"
+                aria-hidden="true"
+            >
+            </div>
+            <!-- Layer 2 -->
+            <div
+                class="absolute inset-0 pointer-events-none blur-[75px] md:blur-[108px] opacity-90"
+                style="background:
+          repeating-linear-gradient(
+            100deg,
+            #041022 0%,
+            #041022 3%,
+            rgba(20, 60, 120, 0.7) 5%,
+            rgba(20, 60, 120, 0.7) 7%,
+            transparent 10%,
+            transparent 12%,
+            rgba(20, 60, 120, 0.7) 14%,
+            #041022 16%
+          ),
+          repeating-linear-gradient(
+            100deg,
+            #b3e5ff 0%,
+            #b3e5ff 1.5%,
+            rgba(179, 229, 255, 0.8) 2%,
+            #2563eb 3%,
+            #2563eb 4%,
+            rgba(179, 229, 255, 0.8) 4.5%,
+            #b3e5ff 5%
+          )
+        ; background-size: 300% 200%; mix-blend-mode: multiply"
+                aria-hidden="true"
+            >
+            </div>
+            <!-- Layer 3 -->
+            <div
+                class="absolute inset-0 pointer-events-none"
+                style="background: radial-gradient(ellipse at 100% 100%, #ffffff 20%, #00030a 80%); mix-blend-mode: multiply"
+                aria-hidden="true"
+            >
+            </div>
+            <!-- Content wrapper - keep it above the absolute layers -->
+            <div class="relative z-[1]">
+                <!-- Your content -->
+                <Header />
+                <main
+                    class="mx-auto min-h-screen w-full max-w-360 px-6 pb-20 pt-32 md:px-10"
+                >
+                    {
+                        newspaper && (
+                            <>
+                                <a
+                                    class="mb-5 inline-block  text-primary transition hover:text-primary/60 font-bold text-lg"
+                                    href={
+                                        publicacion
+                                            ? `/periodicos/${newspaper.slug}`
+                                            : "/"
+                                    }
+                                >
+                                    ←{" "}
+                                    {publicacion
+                                        ? newspaper.title
+                                        : "Todos los periódicos"}
+                                </a>
+                                <nav
+                                    class="flex gap-4"
+                                    aria-label="Secciones del periódico"
+                                >
+                                    {menuCategories.map((category) => (
+                                        <a
+                                            class:list={[
+                                                "border border-border/10 bg-white/20 px-4 py-2 transition duration-300",
+                                                category !== "cantina"
+                                                    ? "hover:bg-linear-to-r hover:from-primary/20 hover:via-white/40 hover:to-primary/20"
+                                                    : "hover:bg-linear-to-r hover:from-red-500/20 hover:via-white/40 hover:to-red-500/20",
+                                            ]}
+                                            href={`/periodicos/${newspaper.slug}/categoria/${category}`}
+                                        >
+                                            {getCategoryLabel(category)}
+                                        </a>
+                                    ))}
+                                </nav>
+                            </>
+                        )
+                    }
+                    <slot />
+                </main>
+                <Footer />
+            </div>
+        </div>
+    </body>
+</html>
