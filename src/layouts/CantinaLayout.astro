@@ -23,7 +23,7 @@ const categories = [...new Set(posts.map((post) => post.data.category))];
         <header class="cantina-header">
             <a href={`/periodicos/${newspaper.slug}`}>EL RINCÓN DE LA CANTINA</a
             >
-            <span>Edición sin prisa</span>
+            <span>Edición sin prisa {newspaper.createdAt} </span>
         </header>
         <nav class="cantina-nav" aria-label="Secciones del periódico">
             {
@@ -37,10 +37,7 @@ const categories = [...new Set(posts.map((post) => post.data.category))];
             }
         </nav>
         <main><slot /></main>
-        <footer class="cantina-footer">
-            <strong>La cantina</strong>
-            <span>Historias servidas calientes.</span>
-        </footer>
+   
     </body>
 </html>
 

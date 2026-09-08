@@ -14,5 +14,13 @@
         "description": "Las historias que explican el presente del norte.",
         "cover": "/covers/la-gaceta-norte.svg",
         "createdAt": "2026-09-02"
+    },
+    {
+        "id": "primer-periodico",
+        "title": "Primer periodico de la ABA",
+        "slug": "primer-periodico",
+        "description": "La 36 promoción crea el primer periodico digital",
+        "cover": "/covers/la-gaceta-norte.svg",
+        "createdAt": "08-09-26"
     }
 ]

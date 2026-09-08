@@ -43,9 +43,7 @@ const Layout = isCantina ? CantinaLayout : NewspaperLayout;
     newspaper={newspaper}
     posts={posts}
 >
-    <header class:list={["mt-12", { "cantina-title": isCantina }]}>
-        <h1 class="text-6xl font-medium ">{getCategoryLabel(category)}</h1>
-    </header>
+
     <section class:list={["category-grid ", { "cantina-grid": isCantina }]}>
         {
             categoryPosts.map((post) => (

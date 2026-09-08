@@ -39,7 +39,7 @@ const { Content } = await render(post);
         <p class="mt-12">
             {post.data.author} · {post.data.date.toLocaleDateString("es-ES")}
         </p>
-        <h1>{post.data.title}</h1>
+        <h1 >{post.data.title}</h1>
         <p class="standfirst">{post.data.description}</p>
         <img class="article-cover" src={post.data.cover} alt="" />
         <div class="content"><Content /></div>
@@ -48,7 +48,7 @@ const { Content } = await render(post);
         .article {
             margin: 0 auto;
         }
-        
+
         h1 {
             color: #fff6dc;
             font-size: clamp(2.8rem, 7vw, 6rem);
